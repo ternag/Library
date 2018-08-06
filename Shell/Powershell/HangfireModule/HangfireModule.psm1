@@ -13,7 +13,7 @@ Function New-IndexPattern {
     )
     End {
         # POST /api/saved_objects/index-pattern
-        # {"attributes":{"title":"st-log-event*","timeFieldName":"@timestamp"}}
+        # {"attributes":{"title":"log-event*","timeFieldName":"@timestamp"}}
     
         $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
         $headers.Add("kbn-xsrf", "reporting")
@@ -64,6 +64,13 @@ function Get-IndexPatternId {
     $tmp.id
 }
 
-# Get-IndexPatternId("st-log*")
-  
-# New-IndexPattern("st-log-event*")
+function Get-IndexPatterns {
+    [CmdletBinding()] #Enable all the default paramters, including -Verbose
+    Param(
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'ex: http://localhost:5601',
+            Position = 0)]
+        [String]$kibanaHostUrl = "http://localhost:5601"
+    )
+    Invoke-RestMethod $kibanaHostUrl"/api/saved_objects/?type=index-pattern&fields=title"
+}
