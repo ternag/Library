@@ -9,3 +9,7 @@ function List-Environment {
     Write-Info "Get-ChildItem Env:"
     Get-ChildItem Env: 
 }
+
+function dnwr { dotnet watch run }
+function dnr { dotnet run }
+function dnb { dotnet build }
