@@ -7,7 +7,7 @@ Describe 'Ensure-StartsWithSlash' {
   {  
     $actual = Ensure-StartsWithSlash -InputValue $input
 
-    it 'should return string starting with a slash' {
+    it "should return string starting with a slash. Input: '$input'" {
       $actual | should be "/_search"
     }
   }
@@ -66,3 +66,10 @@ Describe 'Get-PathQuery: fails' {
   }
 }
 
+Describe 'test' {
+
+  it 'should work' {
+    $file = Get-Content .\MultipleRequests.es
+    $file | Read-Request
+  }
+}
