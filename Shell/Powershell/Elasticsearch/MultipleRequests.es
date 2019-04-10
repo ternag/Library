@@ -22,7 +22,7 @@ GET /_search/2
   }
 }
 
-
+Get /index/doc/34
 
 
 GET /_search/3

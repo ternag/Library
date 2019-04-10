@@ -8,7 +8,7 @@ Describe 'Ensure-StartsWithSlash' {
     $actual = Ensure-StartsWithSlash -InputValue $input
 
     it "should return string starting with a slash. Input: '$input'" {
-      $actual | should be "/_search"
+      $actual | Should -Be "/_search"
     }
   }
 }
@@ -22,7 +22,7 @@ Describe 'Get-HttpMethod: positives' {
   {
     $actual = Get-HttpMethod $input
     it "should return http method '$input'='$actual'" {
-      $actual | should -BeIn $ValidHttpMethods
+      $actual | Should -BeIn $ValidHttpMethods
     }
   }
 }
@@ -32,9 +32,8 @@ Describe 'Get-HttpMethod: fails' {
 
   foreach ($HttpMethodInput in $HttpMethodInputList)
   {
-    it "should fail if input does not start with a http method. Input='$HttpMethodInput'" {
-      $sb = "Get-HttpMethod '$HttpMethodInput'"
-      [scriptblock]::Create($sb) | should -Throw
+    it "should fail when the input does not start with a http method. Input='$HttpMethodInput'" {
+      { Get-HttpMethod $HttpMethodInput } | should -Throw
     }
   }
 }
@@ -59,17 +58,16 @@ Describe 'Get-PathQuery: fails' {
 
   foreach ($pathQueryInput in $pathQueryInputList)
   {
-    it "should fail if input does not start with a http method. Input='$pathQueryInput'" {
-      $sb = "Get-PathQuery '$pathQueryInput'"
-      [scriptblock]::Create($sb) | should -Throw
+    it "should fail when the input does not contain a path/query. Input='$pathQueryInput'" {
+      {Get-PathQuery $pathQueryInput} | should -Throw
     }
   }
 }
 
-Describe 'test' {
-
-  it 'should work' {
+Describe 'Read-Request' {
+  it 'should return 4 requests' {
     $file = Get-Content .\MultipleRequests.es
-    $file | Read-Request
+    $requests = Group-Lines $file
+    $requests.Length | should -Be 4
   }
 }
