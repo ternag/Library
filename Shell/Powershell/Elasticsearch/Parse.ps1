@@ -58,10 +58,15 @@ function Group-Lines(
     {
       $result.Add($tmp)
     }
+    
+      # $a = New-Object Collections.Generic.List[string];
+      # $result.Add($a)
+    
     # foreach ($section in $result) {
     #   $req = Read-Request $section;
     #   Write-Host " -> $req"
     # }
+    $result
   }
 }
 
@@ -85,4 +90,13 @@ function Read-Request(
     # return new request
     $request
   }
+}
+
+function Parse-File(
+  [Parameter(Mandatory = $true)] [String] $filename
+)
+{
+  $file = Get-Content $filename
+  $requests = Group-Lines $file
+  @($requests | ForEach-Object { Read-Request $_ })
 }

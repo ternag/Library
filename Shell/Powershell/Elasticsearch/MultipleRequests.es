@@ -1,5 +1,3 @@
-
-
 GET /_search/1
 {
   "query": {

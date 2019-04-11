@@ -1,4 +1,4 @@
-GET /_search
+POST /_search
 {
   "query": {
     "bool": {
