@@ -81,52 +81,31 @@ Describe 'Parse-Request' {
   }
 }
 
-Describe 'Group-Lines' {
-  # it 'MultipleRequests should return 4 groups' {
-  #   $file = Get-Content .\MultipleRequests.es
-  #   $requests = Group-Lines $file
-  #   $requests.Length | should -Be 4
-  # }
-  # it 'Read-Request with MultipleRequests should parse 4 groups' {
-  #   $file = Get-Content .\MultipleRequests.es
-  #   $requests = Group-Lines $file
-  #   $result = @($requests | ForEach-Object { Read-Request $_ })
-  #   $result.Length | should -Be 4
-  #   #$result | ForEach-Object { Write-Host $_ }
-  # }
+Describe 'Read-Requests' {
+  it 'Read-Request with MultipleRequests should parse 4 requests' {
+    $file = Get-Content .\MultipleRequests.es
+    $result = Read-Requests $file
+    $result.Length | should -Be 4
+    #$result | ForEach-Object { Write-Host $_ }
+  }
   it 'SimpleSearch should return 1 group' {
     $file = Get-Content .\SimpleSearch.es
-    $groups = Group-Lines $file
-    Write-Host "-> " $groups[0][0]
-    Write-Host "-> " $groups[0][1]
-    Write-Host "-> " $groups[0][2]
-    Write-Host "-> " $groups[0][3]
-    Write-Host "-> " $groups[0][4]
-    Write-Host "-> " $groups.Length
-    #rite-Host "-> " $groups
+    $groups = Read-Requests $file
     $groups.Length | should -Be 1
   }
-  # it 'Read-Request with SimpleSearch should parse 1 group' {
-  #   $file = Get-Content .\SimpleSearch.es
-  #   $requests = Group-Lines $file
-  #   $result = @($requests | ForEach-Object { Read-Request $_ })
-  #   #$result | ForEach-Object { Write-Host $_ }
-  #   $result.Length | should -Be 1
-    
-  # }
 }
 
 Describe 'Parse-File' {
-  # it 'Write multi-line result' {
-  #   $tmp = Parse-File .\MultipleRequests.es
-  #   $tmp | ForEach-Object { Write-Host $_ }
-  # }
-  # it 'Write single-line result' {
-  #   $tmp = Parse-File .\SingleLine.es
-  #   $tmp | ForEach-Object { Write-Host $_ }
-  # }
-  # it 'Write SimpleSearch result' {
-  #   $tmp = Parse-File .\SimpleSearch.es
-  #   $tmp | ForEach-Object { Write-Host $_ }
-  # }
+  it 'Write multi-line result' {
+    $tmp = Parse-File .\MultipleRequests.es
+    $tmp | ForEach-Object { Write-Host $_ }
+  }
+  it 'Write single-line result' {
+    $tmp = Parse-File .\SingleLine.es
+    $tmp | ForEach-Object { Write-Host $_ }
+  }
+  it 'Write SimpleSearch result' {
+    $tmp = Parse-File .\SimpleSearch.es
+    $tmp | ForEach-Object { Write-Host $_ }
+  }
 }
