@@ -17,13 +17,15 @@ class EsRequest
 }
 
 function Ensure-StartsWithSlash(
-  [Parameter(Mandatory = $true)][String]$InputValue
+  [Parameter(Mandatory = $true, ValueFromPipeline = $true)][String]$InputValue
 ) {
-  if ($InputValue.StartsWith("/")) {
-    return $InputValue
-  }
-  else {
-    return "/$InputValue"
+  Begin {
+    if ($InputValue.StartsWith("/")) {
+      return $InputValue
+    }
+    else {
+      return "/$InputValue"
+    }
   }
 }
 
@@ -52,7 +54,6 @@ function Get-PathQuery([Parameter(Mandatory = $true)] [String] $InputString) {
   else {
     throw [System.ArgumentException]::new("'$InputString' does not contain a path/query")
   }
-  return $secondToken;
 }
 
 function Read-Requests(
@@ -99,8 +100,7 @@ function Read-EsFile(
 )
 {
   $file = Get-Content $filename
-  $requests = Read-Requests $file
-  $requests
+  Read-Requests $file
 }
 
 function Get-Credential(

@@ -1,4 +1,4 @@
-. ./Parse.ps1
+. $PSScriptRoot/../posh-elastic.psm1
 
 Describe 'Ensure-StartsWithSlash' {
   $inputList = "_search","/_search"
@@ -86,7 +86,6 @@ Describe 'Read-Requests' {
     $file = Get-Content .\MultipleRequests.es
     $result = Read-Requests $file
     $result.Length | should -Be 4
-    #$result | ForEach-Object { Write-Host $_ }
   }
   it 'SimpleSearch should return 1 group' {
     $file = Get-Content .\SimpleSearch.es
@@ -97,15 +96,15 @@ Describe 'Read-Requests' {
 
 Describe 'Read-EsFile' {
   it 'Write multi-line result' {
-    $tmp = Read-EsFile .\MultipleRequests.es
+    $tmp = Read-EsFile MultipleRequests.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write single-line result' {
-    $tmp = Read-EsFile .\SingleLine.es
+    $tmp = Read-EsFile SingleLine.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write SimpleSearch result' {
-    $tmp = Read-EsFile .\SimpleSearch.es
+    $tmp = Read-EsFile SimpleSearch.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
 }
