@@ -95,17 +95,17 @@ Describe 'Read-Requests' {
   }
 }
 
-Describe 'Parse-File' {
+Describe 'Read-EsFile' {
   it 'Write multi-line result' {
-    $tmp = Parse-File .\MultipleRequests.es
+    $tmp = Read-EsFile .\MultipleRequests.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write single-line result' {
-    $tmp = Parse-File .\SingleLine.es
+    $tmp = Read-EsFile .\SingleLine.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write SimpleSearch result' {
-    $tmp = Parse-File .\SimpleSearch.es
+    $tmp = Read-EsFile .\SimpleSearch.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
 }

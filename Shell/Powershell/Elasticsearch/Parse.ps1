@@ -60,15 +60,13 @@ function Read-Requests(
 ) {
   Process {
     $tmp = New-Object Collections.Generic.List[string];
-    $result = @() #New-Object Collections.Generic.List[object];
+    $result = @()
     foreach ($line in $Lines) {
-      #Write-Host " o $line"
       if (-not [string]::IsNullOrWhiteSpace($line)) {
         $tmp.Add($line);
       } else {
         if ($tmp.Length -gt 0) {
           $a = Read-Request $tmp
-          #$result.Add($a);
           $result += $a
         }
         $tmp = New-Object Collections.Generic.List[string];
@@ -77,15 +75,8 @@ function Read-Requests(
     if($tmp.Length -gt 0)
     {
       $a = Read-Request $tmp
-      #$result.Add($a);
       $result += $a
     }
-    # foreach ($section in $result) {
-    #   $req = Read-Request $section;
-    #   Write-Host " -> $req"
-    # }
-    #Write-Host $result.Length
-    #Write-Host $result.GetType()
     $result
   }
 }
@@ -100,28 +91,14 @@ function Read-Request(
     $json = $Lines[1..$Lines.Length]
 
     [Request]::new($method, $pathQuery, $json)
-
-    #$obj = [pscustomobject]@{
-    # [pscustomobject]@{
-    #   Method    = $method
-    #   PathQuery = $pathQuery
-    #   Body      = "$json"
-    # }
-  
-    #Write-Host "--> " $obj
-    #$request = New-Object -TypeName psobject -Property $objectProperty
-
-    # return new request
-    #$obj
   }
 }
 
-function Parse-File(
+function Read-EsFile(
   [Parameter(Mandatory = $true)] [String] $filename
 )
 {
   $file = Get-Content $filename
   $requests = Read-Requests $file
-  #@($requests | ForEach-Object { Read-Request $_ })
   $requests
 }
