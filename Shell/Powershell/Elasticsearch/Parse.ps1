@@ -1,10 +1,10 @@
-class Request
+class EsRequest
 {
     [ValidateNotNullOrEmpty()][string]$Method
     [ValidateNotNullOrEmpty()][string]$PathQuery
     [string]$Body
 
-    Request($Method, $PathQuery, $Body) {
+    EsRequest($Method, $PathQuery, $Body) {
        $this.Method = $Method
        $this.PathQuery = $PathQuery
        $this.Body = $Body
@@ -90,7 +90,7 @@ function Read-Request(
     $pathQuery = Ensure-StartsWithSlash (GET-PathQuery $firstLine)
     $json = $Lines[1..$Lines.Length]
 
-    [Request]::new($method, $pathQuery, $json)
+    [EsRequest]::new($method, $pathQuery, $json)
   }
 }
 
@@ -101,4 +101,35 @@ function Read-EsFile(
   $file = Get-Content $filename
   $requests = Read-Requests $file
   $requests
+}
+
+function Get-Credential(
+  [Parameter(Mandatory = $true)][string]$username,
+  [Parameter(Mandatory = $true)][string]$password
+)
+{
+  $pwd = ConvertTo-SecureString $password -AsPlainText -Force
+  New-Object System.Management.Automation.PSCredential ($username, $pwd)
+}
+
+function Invoke-EsRequest(
+  [Parameter(Mandatory = $true)] [EsRequest] $request,
+  [Parameter(Mandatory = $true, HelpMessage="ex: http://host.name:9200")] [string] $hostUrl,
+  [Parameter(Mandatory = $false)][bool]$useSsl = $false,
+  [Parameter(Mandatory = $false)][System.Management.Automation.PSCredential]$credential
+)
+{
+  $uri = [System.Uri]::new($hostUrl + $request.PathQuery)
+  $arguments = @{
+    Uri = $uri
+    Method = $request.Method
+  }
+  if($request.Method -eq "POST" -or $request.Method -eq "PUT") {
+    $arguments.Add("Body", $request.Body)
+  }
+  if($useSsl) {
+    $arguments.Add("SkipCertificateCheck")
+    $arguments.Add("Credential", $credential)
+  }
+  Invoke-RestMethod @arguments
 }
