@@ -1,19 +1,17 @@
-class EsRequest
-{
-    [ValidateNotNullOrEmpty()][string]$Method
-    [ValidateNotNullOrEmpty()][string]$PathQuery
-    [string]$Body
+class EsRequest {
+  [ValidateNotNullOrEmpty()][string]$Method
+  [ValidateNotNullOrEmpty()][string]$PathQuery
+  [string]$Body
 
-    EsRequest($Method, $PathQuery, $Body) {
-       $this.Method = $Method
-       $this.PathQuery = $PathQuery
-       $this.Body = $Body
-    }
+  EsRequest($Method, $PathQuery, $Body) {
+    $this.Method = $Method
+    $this.PathQuery = $PathQuery
+    $this.Body = $Body
+  }
 
-    [String] ToString()
-    {
-        return $this.Method +'; '+ $this.PathQuery +'; '+ $this.Body
-    }
+  [String] ToString() {
+    return $this.Method + '; ' + $this.PathQuery + '; ' + $this.Body
+  }
 }
 
 function Ensure-StartsWithSlash(
@@ -65,7 +63,8 @@ function Read-Requests(
     foreach ($line in $Lines) {
       if (-not [string]::IsNullOrWhiteSpace($line)) {
         $tmp.Add($line);
-      } else {
+      }
+      else {
         if ($tmp.Length -gt 0) {
           $a = Read-Request $tmp
           $result += $a
@@ -73,8 +72,7 @@ function Read-Requests(
         $tmp = New-Object Collections.Generic.List[string];
       }
     }
-    if($tmp.Length -gt 0)
-    {
+    if ($tmp.Length -gt 0) {
       $a = Read-Request $tmp
       $result += $a
     }
@@ -97,8 +95,7 @@ function Read-Request(
 
 function Read-EsFile(
   [Parameter(Mandatory = $true)] [String] $filename
-)
-{
+) {
   $file = Get-Content $filename
   Read-Requests $file
 }
@@ -106,30 +103,30 @@ function Read-EsFile(
 function Get-Credential(
   [Parameter(Mandatory = $true)][string]$username,
   [Parameter(Mandatory = $true)][string]$password
-)
-{
+) {
   $pwd = ConvertTo-SecureString $password -AsPlainText -Force
   New-Object System.Management.Automation.PSCredential ($username, $pwd)
 }
 
 function Invoke-EsRequest(
-  [Parameter(Mandatory = $true)] [EsRequest] $request,
-  [Parameter(Mandatory = $true, HelpMessage="ex: http://host.name:9200")] [string] $hostUrl,
+  [Parameter(Mandatory = $true, ValueFromPipeline = $true)] [EsRequest] $request,
+  [Parameter(Mandatory = $true, HelpMessage = "ex: http://host.name:9200")] [string] $hostUrl,
   [Parameter(Mandatory = $false)][bool]$useSsl = $false,
   [Parameter(Mandatory = $false)][System.Management.Automation.PSCredential]$credential
-)
-{
-  $uri = [System.Uri]::new($hostUrl + $request.PathQuery)
-  $arguments = @{
-    Uri = $uri
-    Method = $request.Method
+) {
+  Process {
+    $uri = [System.Uri]::new($hostUrl + $request.PathQuery)
+    $arguments = @{
+      Uri    = $uri
+      Method = $request.Method
+    }
+    if ($request.Method -eq "POST" -or $request.Method -eq "PUT") {
+      $arguments.Add("Body", $request.Body)
+    }
+    if ($useSsl) {
+      $arguments.Add("SkipCertificateCheck")
+      $arguments.Add("Credential", $credential)
+    }
+    Invoke-RestMethod @arguments
   }
-  if($request.Method -eq "POST" -or $request.Method -eq "PUT") {
-    $arguments.Add("Body", $request.Body)
-  }
-  if($useSsl) {
-    $arguments.Add("SkipCertificateCheck")
-    $arguments.Add("Credential", $credential)
-  }
-  Invoke-RestMethod @arguments
 }
