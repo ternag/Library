@@ -61,7 +61,11 @@ function Read-Requests(
     $tmp = New-Object Collections.Generic.List[string];
     $result = @()
     foreach ($line in $Lines) {
-      if (-not [string]::IsNullOrWhiteSpace($line)) {
+      if($line.Trim().StartsWith("#"))
+      {
+        #Ignore comment lines
+      }
+      elseif (-not [string]::IsNullOrWhiteSpace($line)) {
         $tmp.Add($line);
       }
       else {

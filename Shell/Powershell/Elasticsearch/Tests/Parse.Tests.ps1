@@ -1,5 +1,8 @@
-. $PSScriptRoot/../posh-elastic.psm1
+#. $PSScriptRoot/../posh-elastic.psm1
 
+Import-Module $PSScriptRoot/../posh-elastic.psd1
+
+InModuleScope posh-elastic {
 Describe 'Ensure-StartsWithSlash' {
   $inputList = "_search","/_search"
 
@@ -107,4 +110,5 @@ Describe 'Read-EsFile' {
     $tmp = Read-EsFile SimpleSearch.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
+}
 }
