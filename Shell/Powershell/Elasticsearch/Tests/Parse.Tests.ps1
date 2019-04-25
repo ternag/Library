@@ -86,12 +86,12 @@ Describe 'Parse-Request' {
 
 Describe 'Read-Requests' {
   it 'Read-Request with MultipleRequests should parse 4 requests' {
-    $file = Get-Content .\MultipleRequests.es
+    $file = Get-Content $PSScriptRoot/MultipleRequests.es
     $result = Read-Requests $file
     $result.Length | should -Be 4
   }
   it 'SimpleSearch should return 1 group' {
-    $file = Get-Content .\SimpleSearch.es
+    $file = Get-Content $PSScriptRoot/SimpleSearch.es
     $groups = Read-Requests $file
     $groups.Length | should -Be 1
   }
@@ -99,15 +99,15 @@ Describe 'Read-Requests' {
 
 Describe 'Read-EsFile' {
   it 'Write multi-line result' {
-    $tmp = Read-EsFile MultipleRequests.es
+    $tmp = Read-EsFile $PSScriptRoot/MultipleRequests.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write single-line result' {
-    $tmp = Read-EsFile SingleLine.es
+    $tmp = Read-EsFile $PSScriptRoot/SingleLine.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
   it 'Write SimpleSearch result' {
-    $tmp = Read-EsFile SimpleSearch.es
+    $tmp = Read-EsFile $PSScriptRoot/SimpleSearch.es
     $tmp | ForEach-Object { Write-Host $_ }
   }
 }

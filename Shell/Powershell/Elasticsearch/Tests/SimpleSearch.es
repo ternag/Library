@@ -1,3 +1,4 @@
+### Just return all documents ###
 POST /_search
 {
   "query": {
