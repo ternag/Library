@@ -61,11 +61,7 @@ function Read-Requests(
     $tmp = New-Object Collections.Generic.List[string];
     $result = @()
     foreach ($line in $Lines) {
-      if($line.Trim().StartsWith("#"))
-      {
-        #Ignore comment lines
-      }
-      elseif (-not [string]::IsNullOrWhiteSpace($line)) {
+      if (-not [string]::IsNullOrWhiteSpace($line)) {
         $tmp.Add($line);
       }
       else {
@@ -98,10 +94,12 @@ function Read-Request(
 }
 
 function Read-EsFile(
-  [Parameter(Mandatory = $true)] [String] $filename
+  [Parameter(Mandatory = $true, ValueFromPipeline = $true)] [String] $filename
 ) {
-  $file = Get-Content $filename
-  Read-Requests $file
+  Process {
+    $file = Get-Content $filename
+    Read-Requests $file
+  }
 }
 
 function Get-Credential(
@@ -123,6 +121,7 @@ function Invoke-EsRequest(
     $arguments = @{
       Uri    = $uri
       Method = $request.Method
+      ContentType = "application/json"
     }
     if ($request.Method -eq "POST" -or $request.Method -eq "PUT") {
       $arguments.Add("Body", $request.Body)
