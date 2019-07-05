@@ -1,5 +1,4 @@
-#. $PSScriptRoot/../posh-elastic.psm1
-
+Remove-Module $PSScriptRoot/../posh-elastic.psd1
 Import-Module $PSScriptRoot/../posh-elastic.psd1
 
 InModuleScope posh-elastic {
@@ -67,7 +66,7 @@ Describe 'Get-PathQuery: fails' {
   }
 }
 
-Describe 'Parse-Request' {
+Describe 'Read-Request' {
   it 'should parse single-line requests' {
     $input = ,"GET /index/doc/13"
     $actual = Read-Request $input
@@ -94,6 +93,11 @@ Describe 'Read-Requests' {
     $file = Get-Content $PSScriptRoot/SimpleSearch.es
     $groups = Read-Requests $file
     $groups.Length | should -Be 1
+  }
+  it 'test Read-Request' {
+    $lines = Get-Content $PSScriptRoot/ErrorInJson.es
+    $req = Read-Request $lines
+    Write-Host $req.Body
   }
 }
 

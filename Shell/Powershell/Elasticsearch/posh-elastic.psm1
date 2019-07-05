@@ -61,7 +61,10 @@ function Read-Requests(
     $tmp = New-Object Collections.Generic.List[string];
     $result = @()
     foreach ($line in $Lines) {
-      if (-not [string]::IsNullOrWhiteSpace($line)) {
+      if ($line.Trim().StartsWith("#")) {
+        #Ignore comment lines
+      }
+      elseif (-not [string]::IsNullOrWhiteSpace($line)) {
         $tmp.Add($line);
       }
       else {
@@ -81,15 +84,25 @@ function Read-Requests(
 }
 
 function Read-Request(
-  [Parameter(Mandatory = $true)] [System.Object[]] $Lines
+  [Parameter(Mandatory = $true, ValueFromPipeline = $true)] [System.Object[]] $Lines
 ) {
   Process {
+    #Write-Host "-> 1"
     $firstLine = $Lines[0]
     $method = Get-HttpMethod $firstLine
     $pathQuery = Ensure-StartsWithSlash (GET-PathQuery $firstLine)
     $json = $Lines[1..$Lines.Length]
-
-    [EsRequest]::new($method, $pathQuery, $json)
+    if ($json) {
+      if (Test-Json "$json") {
+        Write-Host "-> 2"
+        [EsRequest]::new($method, $pathQuery, "$json")
+      }
+      else {
+        Write-Host "-> 3"
+        Write-Error "BAD json" #-ErrorAction Stop
+        throw "BAD json"
+      }
+    }
   }
 }
 
@@ -119,15 +132,16 @@ function Invoke-EsRequest(
   Process {
     $uri = [System.Uri]::new($hostUrl + $request.PathQuery)
     $arguments = @{
-      Uri    = $uri
-      Method = $request.Method
+      Uri         = $uri
+      Method      = $request.Method
       ContentType = "application/json"
     }
     if ($request.Method -eq "POST" -or $request.Method -eq "PUT") {
       $arguments.Add("Body", $request.Body)
     }
     if ($useSsl) {
-      $arguments.Add("SkipCertificateCheck")
+      #$arguments.Add("AllowUnencryptedAuthentication", $true)
+      $arguments.Add("SkipCertificateCheck", $true)
       $arguments.Add("Credential", $credential)
     }
     Invoke-RestMethod @arguments

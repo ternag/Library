@@ -69,7 +69,7 @@ Copyright = '(c) Terje Nagel. All rights reserved.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @("Read-EsFile", "Invoke-EsRequest", "Get-Credential")
+FunctionsToExport = @("Read-EsFile", "Invoke-EsRequest", "Read-Request")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
