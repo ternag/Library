@@ -1,6 +1,6 @@
 # Profile
 
-Import-Module ProfileModule -WarningAction SilentlyContinue
+Import-Module ProfileModule  -DisableNameChecking
 
 # install posh-git by running:
 # > PowerShellGet\Install-Module posh-git -Scope CurrentUser -AllowPrerelease -Force
@@ -10,7 +10,7 @@ function Start-TestShell ([string]$Module)
 {
   pwsh -NoExit -NoProfile -Command {
     param($Module)
-    Import-Module ProfileModule -WarningAction SilentlyContinue
+    Import-Module ProfileModule  -DisableNameChecking
     if($Module)
     {
       Import-Module -Name $Module
