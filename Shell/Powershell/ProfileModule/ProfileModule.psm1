@@ -10,6 +10,22 @@ function List-Environment {
     Get-ChildItem Env: 
 }
 
-function dnwr { dotnet watch run }
-function dnr { dotnet run }
-function dnb { dotnet build }
+function Convert-ToBase64 {
+    [Cmdletbinding()]
+    param(
+        [parameter(ValueFromPipeline)] $Item
+    )
+    Process {
+        return [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Item))    
+    }
+}
+
+function Convert-FromBase64 {
+    [Cmdletbinding()]
+    param(
+        [parameter(ValueFromPipeline)] $Item
+    )
+    Process {
+        return [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Item))
+    }
+}
