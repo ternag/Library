@@ -1,11 +1,13 @@
-function ll { param ([String]$path = ".") Get-ChildItem -Path $path -Exclude .* }
+Set-Alias -Name ll -Value Get-ChildItemLl
+Set-Alias -Name la -Value Get-ChildItemLa
+Set-Alias -Name sts -Value Start-TestShell
 
-function la { param ([String]$path = ".") Get-ChildItem -Path $path -Force}
-
+function Get-ChildItemLl { param ([String]$path = ".") Get-ChildItem -Path $path -Exclude .* }
+function Get-ChildItemLa { param ([String]$path = ".") Get-ChildItem -Path $path -Force}
 function Write-Info { param ([string]$message) Write-Host -ForegroundColor DarkYellow $message}
 function Write-Error { param ([string]$message) Write-Host -ForegroundColor DarkRed $message}
 
-function List-Environment { 
+function Show-Environment { 
     Write-Info "Get-ChildItem Env:"
     Get-ChildItem Env: 
 }
@@ -66,11 +68,28 @@ function Add-Path {
           if (-not (Test-Path $dir)) {
             Write-Verbose "$dir does not exist in the filesystem"
           } else {
-            $Path += $dir
+            $Path = $dir + $Path
           }
         }
       }
   
       $env:PATH = [String]::Join(';', $Path)
     }
+  }
+
+  function Start-TestShell ([string]$Module)
+  {
+    pwsh -NoExit -NoProfile -Command {
+      param($Module)
+      Import-Module ProfileModule  -DisableNameChecking
+      if($Module)
+      {
+        Import-Module -Name $Module
+        Write-Host "Imported module: " $Module
+      }
+      function prompt { 
+        Write-Host -NoNewline -ForegroundColor Green "$($pwd.Path.Substring($pwd.Path.LastIndexOf("\"))) TEST";
+        return ">"
+      }
+    } -args $Module
   }
